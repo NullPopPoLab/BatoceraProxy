@@ -1,13 +1,13 @@
-﻿﻿# Batocera.linux Webフロントエンド開発支援プロクシ
+# Batocera.linux Webフロントエンド開発支援プロクシ
 
-Batocera.linuxのWebフロントエンドはあまり手を入れられていない分野ではありますが、  
-ソースがEmulationStationに組み込まれていて書き換え(というかビルド)の敷居が高いため  
+[Batocera.linux](https://batocera.org/)のWebフロントエンドはあまり手を入れられていない分野ではありますが、  
+ソースが[EmulationStation](https://github.com/NullPopPoLab/batocera-emulationstation/branches)に組み込まれていて書き換え(というかビルド)の敷居が高いため  
 手を入れることすら困難といった問題があります。  
 むかーしはHTMLだけローカルに拾ってくれば済む話だったんだけど、最近のブラウザって  
 セキュリティに過敏でどーでもいーとこまでいぢわるなんだもん。  
 
 というわけで、BatoceraのWebAPIを呼び出すだけのプロクシを組んでみました。  
-NullPopPoCustom用に機能整備されたものですが、本家Batoceraでも互換性のある部分は  
+[NullPopPoCustom](https://github.com/NullPopPoLab/batocera.linux/wiki)用に機能整備されたものですが、本家Batoceraでも互換性のある部分は  
 だいたい動作確認できてます。ただしジャンル選択については本家でもいろいろと  
 挙動怪しげな部分あるので完全対応というわけにもいかないんだこれ。  
 
