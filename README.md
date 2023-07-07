@@ -88,7 +88,7 @@ fe/resources/services/index.html
 - RemoveMedia: メディアファイルの削除に対応
 - SaveGenreByIDs: ジャンル情報をジャンルIDで保存する
 - SlideShow: スライドショー機能に対応
-- SortableName: ソート用名称に対応
+- SortName: ソート用名称に対応
 - StrictTitle: 厳密なタイトル名称を別途保持
 - GenreLanguages: ジャンル表示に対応する言語コードと表示名の辞書
 - Flags: 対応するフラグ系MetaDataのキー名と表示名の辞書
