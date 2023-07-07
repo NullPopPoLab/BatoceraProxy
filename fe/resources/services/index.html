@@ -454,20 +454,45 @@ function createSecondsTime(v){
 
 function parseDate(v){
 	if(!v)return '';
-	if(v.length<8)return '';
-	var y=parseInt(v.substring(0,4));
+	var yp=0;
+	var mp=4;
+	var dp=6;
+	var tp=8;
+	var hp=9;
+	var ip=11;
+	var sp=13;
+	switch(v.length){
+		// YYYYMMDDThhmmss 
+		case 8: case 15: break;
+
+		// YYYY-MM-DDThh:mm:ss 
+		case 10: case 19:
+		mp+=1;
+		dp+=2;
+		tp+=2;
+		hp+=2;
+		ip+=3;
+		sp+=4;
+		break;
+
+		default:
+		return '';
+	}
+
+	var y=parseInt(v.substring(yp,yp+4));
 	if(isNaN(y))return '';
-	var m=parseInt(v.substring(4,6));
+	var m=parseInt(v.substring(mp,mp+2));
 	if(isNaN(m))return '';
-	var d=parseInt(v.substring(6,8));
+	var d=parseInt(v.substring(dp,dp+2));
 	if(isNaN(d))return '';
 	var t=new Date(y,m-1,d);
-	if(v.substring(8,9)!='T')return t;
-	var h=parseInt(v.substring(9,11));
+	if(v.substring(tp,tp+1)!='T')return t;
+
+	var h=parseInt(v.substring(hp,hp+2));
 	if(isNaN(h))return t;
-	var i=parseInt(v.substring(11,13));
+	var i=parseInt(v.substring(ip,ip+2));
 	if(isNaN(i))return t;
-	var s=parseInt(v.substring(13,15));
+	var s=parseInt(v.substring(sp,sp+2));
 	if(isNaN(s))return t;
 	t.setHours(h);
 	t.setMinutes(i);
@@ -997,8 +1022,6 @@ function updateMetaEditor(gt,onsubmit){
 		genres:{capt:'Genres',type:'genres'},
 		players:{capt:'Players',type:'lineinput'},
 	}
-	if(!caps.StrictTitle)delete meta.title;
-	if(!caps.SortName)delete meta.sortname;
 	for(var it in caps.Texts){
 		meta[it]={capt:caps.Texts[it],type:'textinput'}
 	}
@@ -1406,6 +1429,8 @@ function updateGameView(gt,cbquit,cbchg,cberr){
 	}
 
 	btntray.append(createMetaButton(gt,(dst)=>{
+		if(dst.title=='')delete dst.title;
+		if(dst.sortname=='')delete dst.sortname;
 		for(var k in dst)gt[k]=dst[k];
 		if(cbchg)cbchg(dst);
 		var url='/systems/'+system_ctrl[gt.systemName].src.name+'/games';
