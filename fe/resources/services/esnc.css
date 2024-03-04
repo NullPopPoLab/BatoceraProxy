@@ -1,0 +1,216 @@
+html, body { 
+	margin:0px; 
+	padding:0px; 
+	background-color:#202020; 
+	color:white;
+	overflow:hidden;
+	height: 100vh;
+	width: 100vw;
+}
+
+screen{
+	display:flex;
+	flex-direction:column;
+}
+
+header {
+	width: 100%;
+	height: 1.5em;
+	background-color:#F0F0F0;
+	color:black;
+	flex-shrink:0;
+}
+
+footer{
+	width: 100%;
+	height: 1.5em;
+	background-color:#F0F0F0;
+	color:black;
+	flex-shrink:0;
+}
+
+main {
+}
+
+.mainboard{
+}
+.leftpane {
+	color:white;
+	background-color:#202020; 
+	flex-shrink:0;
+	overflow-y: auto;
+	max-height: calc(100vh - 5em);
+}
+.rightpane {
+	flex-grow:1;
+	overflow-y: auto;
+	max-height: calc(100vh - 3em);
+}
+.dialog{
+	color:white;
+	background-color:#202020; 
+	width:60%;
+	height:40%;
+}
+
+input[type="text"]{
+	width:40em;
+}
+textarea{
+	width:40em;
+	height:6em;
+}
+
+.iplmon_table{
+	border-style:outset;
+	border-width:2px;
+}
+.iplmon_thr{
+}
+.iplmon_tdr{
+}
+.iplmon_th{
+	border-style:outset;
+}
+.iplmon_td_category{
+	border-style:inset;
+}
+.iplmon_td_path{
+	border-style:inset;
+}
+.iplmon_td_condition{
+	border-style:inset;
+}
+
+.toolbox{
+	padding:0.3em;
+}
+.toolbtn{
+	font-size:120%;
+}
+.sysbox{
+	padding:0.3em;
+}
+.syslist{
+}
+.syscollection{
+}
+.syshardware{
+}
+.cardgroup{
+	color:white;
+	background-color:#202020; 
+	text-align:center;
+}
+.card_others{
+	border:outset;
+	background-color:#777777; 
+	color:black;
+}
+.card_selected{
+	border:inset;
+	background-color:#444444; 
+	color:white;
+}
+
+.homeview{
+	padding:0.3em;
+	text-align:center;
+}
+.currentgame{
+	margin-top: 1.5em;
+	border: ridge;
+	font-size:150%;
+}
+
+.homecaption{
+	font-size:300%;
+}
+.secondcaption{
+	font-size:150%;
+}
+.curgamecaption{
+	font-size:100%;
+	padding-bottom:0.5em;
+}
+.systemcaption{
+	font-size:150%;
+}
+.gamecaption{
+	font-size:200%;
+}
+.gamethumb{
+	max-width:60vw;
+}
+
+.gamelisview{
+	padding:0.3em;
+	text-align:center;
+}
+.systemicon{
+	max-width:60vw;
+	max-height:10vh;
+	font-size:350%;
+}
+
+.gamelist_table{
+	border-style:outset;
+	border-width:2px;
+	text-align:left;
+}
+.gamelist_thr{
+}
+.gamelist_tdr{
+}
+.gamelist_th{
+	border-style:outset;
+	text-align:center;
+}
+.gamelist_td_str{
+	border-style:inset;
+	text-align:left;
+}
+.gamelist_td_num{
+	border-style:inset;
+	text-align:right;
+}
+.gamelist_tdn{
+}
+
+.metaedit_dialog{
+	color:white;
+	background-color:#202020; 
+	width:80%;
+	height:90%;
+	text-align:left;
+}
+.metaedit_top_right{
+	width:100%;
+	text-align:right;
+}
+.metaedit_dialog_close{
+	font-size:125%;
+}
+
+.btn_normal{
+}
+.btn_runnable{
+	background-color:#aaffff;
+}
+.btn_kidgame{
+	background-color:#aaffaa;
+}
+.btn_favorite{
+	background-color:#ffdd00;
+}
+.btn_hidden{
+	background-color:#444444;
+}
+
+.docs_dialog{
+	color:white;
+	background-color:#202020; 
+	width:60%;
+	height:60%;
+	text-align:center;
+}

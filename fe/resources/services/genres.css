@@ -1,0 +1,46 @@
+.genres_dialog{
+	color:white;
+	background-color:#202020; 
+	width:60%;
+	height:90%;
+}
+.genres_toolbar{
+	width:100%;
+	text-align:right;
+}
+.genres_dl{
+}
+.genres_dt{
+}
+.genres_dd{
+}
+.genres_footer{
+	width:100%;
+	text-align:right;
+}
+
+.genres_langsel{
+	text-align:left;
+}
+.genres_button_close{
+}
+.genres_button_cancel{
+}
+.genres_button_ok{
+}
+.genres_unlocked{
+	border:outset;
+	background-color:#777777; 
+	color:black;
+	display:inline-block;
+	margin:0.1em;
+	padding:0.2em;
+}
+.genres_locked{
+	border:inset;
+	background-color:#556622; 
+	color:white;
+	display:inline-block;
+	margin:0.1em;
+	padding:0.2em;
+}

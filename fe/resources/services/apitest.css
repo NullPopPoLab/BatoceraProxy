@@ -1,0 +1,83 @@
+html, body { 
+	margin:0px; 
+	padding:0px; 
+	background-color:#202020; 
+	color:white;
+	overflow:hidden;
+	height: 100vh;
+	width: 100vw;
+}
+
+screen{
+	display:flex;
+	flex-direction:column;
+}
+
+header {
+	width: 100%;
+	height: 1.5em;
+	background-color:#F0F0F0;
+	color:black;
+	flex-shrink:0;
+}
+
+footer{
+	width: 100%;
+	height: 1.5em;
+	background-color:#F0F0F0;
+	color:black;
+	flex-shrink:0;
+}
+
+main {
+}
+
+.mainboard{
+}
+.leftpane {
+	color:white;
+	background-color:#202020; 
+	flex-shrink:0;
+	overflow-y: auto;
+	max-height: calc(100vh - 5em);
+}
+.rightpane {
+	flex-grow:1;
+	overflow-y: auto;
+	max-height: calc(100vh - 3em);
+}
+.dialog{
+	color:white;
+	background-color:#202020; 
+	width:60%;
+	height:40%;
+}
+
+input[type="text"]{
+	width:40em;
+}
+textarea{
+	width:40em;
+	height:6em;
+}
+
+.iplmon_table{
+	border-style:outset;
+	border-width:4px;
+}
+.iplmon_thr{
+}
+.iplmon_tdr{
+}
+.iplmon_th{
+	border-style:outset;
+}
+.iplmon_td_category{
+	border-style:inset;
+}
+.iplmon_td_path{
+	border-style:inset;
+}
+.iplmon_td_condition{
+	border-style:inset;
+}

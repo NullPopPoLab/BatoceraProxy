@@ -1,13 +1,13 @@
-# Batocera.linux Webフロントエンド開発支援プロクシ
+﻿# Batocera.linux Webフロントエンド開発支援プロクシ
 
-[Batocera.linux](https://batocera.org/)のWebフロントエンドはあまり手を入れられていない分野ではありますが、  
-ソースが[EmulationStation](https://github.com/NullPopPoLab/batocera-emulationstation/branches)に組み込まれていて書き換え(というかビルド)の敷居が高いため  
+Batocera.linuxのWebフロントエンドはあまり手を入れられていない分野ではありますが、  
+ソースがEmulationStationに組み込まれていて書き換え(というかビルド)の敷居が高いため  
 手を入れることすら困難といった問題があります。  
 むかーしはHTMLだけローカルに拾ってくれば済む話だったんだけど、最近のブラウザって  
 セキュリティに過敏でどーでもいーとこまでいぢわるなんだもん。  
 
 というわけで、BatoceraのWebAPIを呼び出すだけのプロクシを組んでみました。  
-[NullPopPoCustom](https://github.com/NullPopPoLab/batocera.linux/wiki)用に機能整備されたものですが、本家Batoceraでも互換性のある部分は  
+NullPopPoCustom用に機能整備されたものですが、本家Batoceraでも互換性のある部分は  
 だいたい動作確認できてます。ただしジャンル選択については本家でもいろいろと  
 挙動怪しげな部分あるので完全対応というわけにもいかないんだこれ。  
 
@@ -17,11 +17,13 @@
 ## ファイル構成 
 
 - fe/*: フロントエンドで扱うファイル群
-- config.template.json: 設定類のテンプレート
+- lib/*: バックエンドライブラリ
+- config.template.json: 設定類テンプレート
+- esncbe.cjs: EmulationStation Webバックエンドソース
 - package.json: Node.js依存パッケージ
-- proxy.js: プロクシソース
 - README.md: 今読んでるやつ
-- setpath.template.bat: Node.jsインストールpath設定のテンプレート
+- restart.bat: プロクシ再起動用bat
+- setpath.template.bat: path設定バッチテンプレート
 - shell.bat: シェルだけ起動したいときのbat
 - start.bat: プロクシ起動用bat
 - stop.bat: プロクシ終了用bat
@@ -29,12 +31,11 @@
 ## 準備
 
 まず[Node.js](https://nodejs.org/)を調達よろし。  
-対応バージョンは知らんけど、とりあえずウチは18.12.1 Windows64bit版で動作確認した。  
+対応バージョンは知らんけど、とりあえずウチは18.16.1で動作確認した。  
 
-で、Windowsでは setpath.template.bat のコピーから start.bat を作成して、  
-そこで各自の環境に合わせて  
+で、Windowsでは start.bat のある階層に setpath.bat を作成して、そこで  
 path C:\NodeJS;%PATH%
-な感じでNode.jsのインストールpathを設定します。  
+な感じでNode.jsのインストールpathを追加定義しときます。  
 Windows以外ではこれも含め、 *.bat に相当するスクリプトを移植して  
 これを代替手順とします。  
 
@@ -46,9 +47,8 @@ EmulationStationのMAIN MENU > SYSTEM SETTINGS > DEVELOPER > ENABLE PUBLIC WEB A
 遠隔操作され放題になりますよっと。  
 
 さて、プロクシの設定に戻るとしまして、  
-config.template.json のコピーから config.json を作成して、 
-そこで各自の環境に合わせて  
-APIBaseに http://Batocera端末のローカルIP:1234 な形で接続先を設定します。  
+config.json のAPIBaseに http://Batocera端末のローカルIP:1234  
+な形で接続先を設定します。  
 (このURLを普通にwebブラウザで覗くとビルドされたフロントエンドが始まるはず)  
 ListeningPortにはプロクシで使うTCPポート番号を決めます。  
 
@@ -74,22 +74,29 @@ fe/resources/services/index.html
 ## WebAPI解説
 
 ### GET /caps
-(NullPopPoCustom拡張)  
+(本家互換)  
 拡張機能の対応状況をJSONにて取得します。  
 このため、フロントエンドでは最初に呼ぶべきAPIとなります。  
-本家Batoceraにはない機能なので、ステータス404が返ってきたときは  
-本家版であることを前提として既定値を設定しておきます。  
+本家Batocera37までにはない機能なので、ステータス404が返ってきたときは  
+古い本家版であることを前提として既定値を設定しておきます。  
 
 - Version: バージョン文字列
-- Documentation: ドキュメント情報に対応
-- GetScraperMedia: メディア置き場内参照可
+- SortName: ソート用名称に対応
+- StrictTitle: 厳密なタイトル名称を別途保持
+- Documentation: ゲーム毎のドキュメント情報に対応
+- GetScraperMedia: scraperディレクトリ内参照可 (旧NullPopPoCustom仕様残骸)
+- GetMediaResource: mediaディレクトリ内参照可
 - GetScreenshot: スクリーンショット取得可
 - JukeBox: ジュークボックス機能に対応
 - RemoveMedia: メディアファイルの削除に対応
 - SaveGenreByIDs: ジャンル情報をジャンルIDで保存する
 - SlideShow: スライドショー機能に対応
-- SortName: ソート用名称に対応
-- StrictTitle: 厳密なタイトル名称を別途保持
+- PartialGameList: ゲームリストの部分取得に対応
+- DeleteMethod: HTTP DELETE対応
+- CanGetMusic: musicディレクトリ内参照可
+- CanGetSplash: splashディレクトリ内参照可
+- CanGetSaves: savesディレクトリ内参照可
+- GameSorts: EmulationStationでのソート条件テーブル
 - GenreLanguages: ジャンル表示に対応する言語コードと表示名の辞書
 - Flags: 対応するフラグ系MetaDataのキー名と表示名の辞書
 - Texts: 対応するスクロール文書系MetaDataのキー名と表示名の辞書
@@ -98,11 +105,15 @@ fe/resources/services/index.html
 - Images: 対応する静止画系MetaDataのキー名と表示名の辞書
 
 ### GET /restart
+(本家互換)  
+Batocera Linuxを再起動します。
+ゲーム実行中のときは、ゲーム終了後に処理されます。  
+
 ### GET /quit
 (本家互換)  
-どちらも、EmulationStationを再起動します。  
+EmulationStationを再起動します。  
 ゲーム実行中のときは、ゲーム終了後に処理されます。  
-後者はEmulationStation終了を想定したものみたいですが、  
+本来はEmulationStation終了を想定したものみたいですが、  
 Batoceraでは結局再起動されます。  
 
 ### GET /emukill
@@ -144,7 +155,7 @@ Batocera35からはステータス201が返ってくるようです。
 - name: ゲームの表示名
 - systemName: システムキー名
 - title: (NullPopPoCustom拡張) 厳密なタイトル名
-- sortname: (NullPopPoCustom拡張 というか本家で封印されてたやつ復活) ソート用名称
+- sortname: (NullPopPoCustom拡張) ソート用名称
 - family: ゲームシリーズ名
 - desc: ゲーム概要
 - rating: 1.0を満点とした評価値
@@ -159,16 +170,14 @@ Batocera35からはステータス201が返ってくるようです。
 - developer: 開発元
 - publisher: 発売元
 - arcadesystem: アーケードシステム名
-  - NullPopPoCustomではアーケード以外でもこれに準じる何かとしてディスクシステムとかスーファミターボとかで流用想定
+  - NullPopPoCustomではアーケード以外でもこれに準じる何かとして流用想定
 - genre: 英語表記でのジャンル群
   - 本家では、この値でゲーム一覧に保存される
-    - しかしフォーマット不定な問題あって正常動作させようなさげ
+    - しかしフォーマット不定な問題あって合わせようなさげ
 - genres: ジャンルIDでのジャンル群
   - 複数のジャンルは , 区切りで示す
   - NullPopPoCustomでは、この値でゲーム一覧に保存される
 - players: プレイヤー人数
-  - 本家では、整数しか書き込めない
-  - NullPopPoCustomでは文字列で書き込めるので、2人対戦と2人協力を区別できたりする
 - premise: (NullPopPoCustom拡張) 前提事項
 - story: (NullPopPoCustom拡張) ストーリー
 - rule: (NullPopPoCustom拡張) ゲームルール
@@ -196,12 +205,12 @@ Batocera35からはステータス201が返ってくるようです。
 - cartridge: カートリッジ画像path
 - pcb: (NullPopPoCustom拡張) 基板画像path
 - flyer: (NullPopPoCustom拡張) 広告画像path
+- instcard: 操作カード画像path
 - wheel: (用途不明)画像path
 - fanart: ファンアート画像path
 - mix: 雑多な画像path
   - EmulationStationで扱われない方
 - map: マップ画像path
-  - 静止画系だが、特例で .pdf .cbz にも対応しているらしい。
 - playcount: プレイ回数
 - lastplayed: 前回実行日時 (ISO8601表記)
 - gametime: 総プレイ秒数
@@ -234,6 +243,7 @@ Batocera35からはステータス201が返ってくるようです。
   - スクリーンショットも含まれる
 - groupsystem: グループであることを示す
   - msx,nesなど複数のシステムが統合されたもの
+- totalGames: 保持するゲーム本数
 - visibleGames: 一覧表示対象のゲーム本数
 - favoritedGames: お気に入り登録されたゲーム本数
 - playedGames: 起動済ゲーム本数
@@ -246,6 +256,10 @@ Batocera35からはステータス201が返ってくるようです。
 対象システムのロゴ画像を取得します。  
 
 ### GET /systems/システムキー名/games
+(本家互換)  
+対象システムに属するゲーム群の情報をJSON配列で取得します。  
+
+### GET /systems/システムキー名/games_partial/開始位置/最大取得数/ソート条件
 (本家互換)  
 対象システムに属するゲーム群の情報をJSON配列で取得します。  
 
@@ -267,92 +281,60 @@ POST bodyにJSONを添え、対象ゲームの情報を書き換えます。
 (本家互換)  
 POST bodyにデータファイル内容を添え、対象ゲームのメディアデータを書き換えます。  
 
-### POST /systems/システムキー名/games/ゲームID/remove_media/メディアキー名
+### DELETE /systems/システムキー名/games/ゲームID/media/メディアキー名
 (NullPopPoCustom拡張)  
 対象ゲームのメディアデータを削除します。  
 
-### GET /systems/システムキー名/games/ゲームID/scraper/データpath
+### GET /systems/システムキー名/games/ゲームID/res/データpath
 (NullPopPoCustom拡張)  
 対象ゲームのメディア置き場から相対pathでデータを取得します。  
 pathがディレクトリであるときは、ディレクトリ内のファイルやディレクトリ群をJSONにて取得します。  
 
 ### POST /addgames
 (本家互換)  
-POST bodyにJSONを添え、ゲーム一覧に追加するらしい(未詳)  
+POST bodyにXMLを添え、ゲーム一覧に追加するらしい(未詳)  
 
 ### POST /removegames
 (本家互換)  
-POST bodyにJSONを添え、ゲーム一覧から削除するらしい(未詳)  
+POST bodyにXMLを添え、ゲーム一覧から削除するらしい(未詳)  
 
 ### GET /screenshots/ファイル名
 (NullPopPoCustom拡張)  
-スクリーンショットから画像データを取得します。  
+スクリーンショットディレクトリから画像データを取得します。  
+
+### GET /music/system/ファイル名
+(NullPopPoCustom拡張)  
+プリセットミュージックディレクトリからファイルを取得します。  
+
+### GET /music/user/ファイル名
+(NullPopPoCustom拡張)  
+ユーザミュージックディレクトリからファイルを取得します。  
+
+### GET /splash/system/ファイル名
+(NullPopPoCustom拡張)  
+プリセットスプラッシュディレクトリからファイルを取得します。  
+
+### GET /splash/user/ファイル名
+(NullPopPoCustom拡張)  
+ユーザスプラッシュディレクトリからファイルを取得します。  
+
+### GET /saves/ファイル名
+(NullPopPoCustom拡張)  
+セーブディレクトリからファイルを取得します。  
 
 
 ## 諸機能補足
 
 ### ゲームグループ
-ゲームのインストール先は /userdata/roms/システムキー名/ 内ですが、  
+ゲ－ムのインストール先は /userdata/roms/システムキー名/ 内ですが、  
 この中にディレクトリを置くとそれがゲームグループとしてまとまった扱いになります。  
 - 1ゲームが複数のファイルで構成されているのをまとめる
 - 複数のゲームに同じ設定をまとめて適用する
 といった効果があります。  
 
-### 厳密なタイトル名
-(NullPopPoCustom拡張)  
-厳密なタイトル名を普通に書くと長すぎてUIで途切れて判別不能になったり  
-といった問題があり、この対策のため厳密なタイトル表記は別枠で持ち、  
-通常の名前にはUIで表示するための簡潔な表現を用意します。  
-
-### ソート用名称
-(NullPopPoCustom拡張)  
-普通に名前でソートすると漢字が後ろに回ったりナンバリングぐちゃぐちゃになったり  
-といった問題があり、この対策のためソート専用の名称定義を用意し  
-- 英大文字,数字,濁点抜きひらがなだけ
-- ナンバリングタイトルの1作目には 1 を付ける
-  - 2桁以上のナンバリングがあるものは桁数を合わせる
-- 非ナンバリングサフィクスは - または ~ で区切る
-  - ナンバリングタイトル群の前に置きたいか後ろに置きたいかで使い分けられる
-- シリーズの先頭側に差し込まれた表記は後ろに回してサフィクス同様の扱い
-- '80 といった2桁年表記は4桁年表示に変更
-  - ナンバリングタイトルと混在しているものは # または @ を前置することで並びを制御できる
-
-といったルールで記述します。  
-なお、定義のないものは通常の表示名でソートされます。  
-
-### Runnable フラグ
-(NullPopPoCustom拡張)  
-起動成功したものに印をつけておく、ただそれだけの存在。  
-
-### Favorite フラグ
-お気に入り抽出、ただそれだけの存在。  
-
-### Hidden フラグ
-一覧から消す、ただそれだけの存在。  
-
-### Kid Game フラグ
-EmulationStationのUI設定にはKIDモードがあり、ゲーム一覧への表示対象を  
-ホワイトリストで限定することができます。  
-このフラグをonにしたものだけがその表示対象となります。  
-早い話がペアレンタルコントロール用。  
-
-### スクロール文書系
-単なる改行可文字列。  
-
-### ブック文書系
-PDFまたはCBZ形式の文書ファイルで扱います。  
-
-### 動画系
-EmulationStationでは .mp4 .avi .mkv .webm が認識される。  
-webブラウザで使えるかはまた別の話。  
-
-### 静止画系
-EmulationStationでは .jpg .png .gif が認識される。  
-webブラウザで使えるかはまた別の話。  
-
 ### メディア置き場
 本家Batoceraでは、 /userdata/roms/システムキー名/ 内に置かれます。  
-NullPopPoCustomでは、 /userdata/scraper/システムキー名/ゲームグループ名/ 内に置かれます。  
+NullPopPoCustomでは、 /userdata/media/システムキー名/ゲームグループ名/ 内に置かれます。 
 
 ### ドキュメント情報
 (NullPopPoCustom拡張)  

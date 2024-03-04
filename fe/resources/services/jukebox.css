@@ -1,0 +1,51 @@
+.jukebox_dialog{
+	color:white;
+	background-color:#202020; 
+	width:60%;
+	height:90%;
+}
+.jukebox_head {
+	flex-shrink:0;
+	width: 99%;
+	height: 3.5em;
+}
+.jukebox_tool {
+	display:flex;
+}
+.jukebox_capt {
+	flex-grow:1;
+	font-size:150%;
+}
+.jukebox_btnbar {
+}
+.jukebox_btn {
+	font-size:200%;
+}
+.jukebox_body {
+	flex-grow:1;
+	overflow: scroll;
+	max-height: calc(100vh - 3em - 3.5em);
+}
+.jukebox_player {
+	border:groove;
+}
+.jukebox_dir {
+	flex-shrink:0;
+}
+.jukebox_list {
+}
+.jukebox_mode_on{
+	font-size:150%;
+	background-color:#aaffff;
+}
+.jukebox_mode_off{
+	font-size:150%;
+}
+.jukebox_list_tbl{
+	max-height: calc(100vh - 3em - 6em);
+}
+.jukebox_list_tr{
+}
+.jukebox_list_tr_cur{
+	background-color:#005070; 
+}
